@@ -32,3 +32,60 @@ static bool GlLogCall(const char* function, const char* file, int line)
 
     return true;
 }
+
+struct ShaderProgramSource {
+    std::string VertexSource;
+    std::string FragmentSource;
+};
+
+static ShaderProgramSource ParseShaders(const std::string& filepath, const std::string& filepathFrag)
+{
+    std::ifstream stream(filepath);
+
+
+    enum class ShaderType {
+        NONE = -1, VERTEX = 0, FRAGMENT = 1
+    };
+
+    std::string line;
+    std::stringstream ss[2];
+    ShaderType type = ShaderType::NONE;
+
+    while (getline(stream, line))
+    {
+        if (line.find("vertex") != std::string::npos)
+        {
+            type = ShaderType::VERTEX;
+
+        }
+        else
+        {
+            ss[(int)type] << line << '\n';
+        }
+    }
+
+    stream.close();
+
+    stream.open(filepathFrag);
+
+    while (getline(stream, line))
+    {
+        if (line.find("#fragment") != std::string::npos)
+        {
+            type = ShaderType::FRAGMENT;
+
+        }
+        else
+        {
+            ss[(int)type] << line << '\n';
+        }
+    }
+
+    const char* vertexS = ss[0].str().c_str();
+
+    const char* vertexSS = ss[1].str().c_str();
+
+    return { ss[0].str(),ss[1].str() };
+
+}
+
