@@ -1,9 +1,5 @@
 #include"Object.h"
-#include"Shader.h"
-
-
 #define OBJECT_H
-#define SHADER_H
 
 int main(void)
 {
@@ -30,31 +26,32 @@ int main(void)
         return -1;
 
     std::vector<float> vertices = {
-           0.5f,  0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f,
-        -0.5f,  0.5f, 0.0f
+ 0.5f,  0.5f, 0.0f,  // top right
+     0.5f, -0.5f, 0.0f,  // bottom right
+    -0.5f, -0.5f, 0.0f,  // bottom left
+    -0.5f,  0.5f, 0.0f
     };
 
-    Object player(vertices, 3);
+
+    std::vector<unsigned int> indices = {
+        0, 1, 3,   // first triangle
+    1, 2, 3
+    };
+
+    Object player(vertices,indices, 3);
 
     Shader shader;
 
+    shader.use();
 
     while (!glfwWindowShouldClose(window))
-    {
-       
-        glClearColor(0.3f, 0.4f, 0.4f, 1.0f);
+    {     
         glClear(GL_COLOR_BUFFER_BIT);
 
-        shader.use();
-        GLCall(glBindVertexArray(player.VAO));
-        GLCall(glDrawArrays(GL_TRIANGLES, 0, player.size));
-        GLCall(glBindVertexArray(0));
-
+       
+        player.DrawElements();
 
         glfwSwapBuffers(window);
-
   
         glfwPollEvents();
     }
