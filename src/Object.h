@@ -8,7 +8,7 @@ class Object
 public:
 	Object();
 	Object(std::vector<float> vertex, unsigned int stride);
-	Object(float vertices[],glm::vec3 startPosition,unsigned int stride);
+	Object(std::vector<float> vertex,glm::vec3 startPosition,unsigned int stride);
 	~Object();
 
 

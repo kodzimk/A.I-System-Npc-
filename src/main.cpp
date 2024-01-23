@@ -1,5 +1,9 @@
 #include"Object.h"
+#include"Shader.h"
+
+
 #define OBJECT_H
+#define SHADER_H
 
 int main(void)
 {
@@ -34,27 +38,7 @@ int main(void)
 
     Object player(vertices, 3);
 
-    ShaderProgramSource src = ParseShaders("src/Shader/vertex_shader.vert", "src/Shader/fragment_shader.frag");
-
-    const GLchar* vertexShaderSource = src.VertexSource.c_str();
-    const GLchar* fragmentShaderSource = src.FragmentSource.c_str();
-
-    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
-
-
-    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-
-    unsigned int shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    Shader shader;
 
 
     while (!glfwWindowShouldClose(window))
@@ -63,7 +47,7 @@ int main(void)
         glClearColor(0.3f, 0.4f, 0.4f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(shaderProgram);
+        shader.use();
         GLCall(glBindVertexArray(player.VAO));
         GLCall(glDrawArrays(GL_TRIANGLES, 0, player.size));
         GLCall(glBindVertexArray(0));
