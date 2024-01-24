@@ -4,7 +4,7 @@ Shader::Shader()
 {
     ShaderProgramSource src = ParseShaders("src/Shader/vertex_shader.vert", "src/Shader/fragment_shader.frag");
 
-    std::cout << src.VertexSource;
+
 
     const GLchar* vertexShaderSource = src.VertexSource.c_str();
     const GLchar* fragmentShaderSource = src.FragmentSource.c_str();

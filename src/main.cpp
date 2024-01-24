@@ -1,61 +1,68 @@
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
+#include <iostream>
+
 #include"Object.h"
-#define OBJECT_H
+using namespace std;
 
-int main(void)
+// settings
+const unsigned int SCR_WIDTH = 800;
+const unsigned int SCR_HEIGHT = 600;
+
+int main()
 {
-    GLFWwindow* window;
-
+    // glfw: initialize and configure
+    // ------------------------------
+    glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  
-    if (!glfwInit())
-        return -1;
 
-   
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
-    if (!window)
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
+
+    // glfw window creation
+    // --------------------
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+    if (window == NULL)
     {
+        std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return -1;
     }
-  
     glfwMakeContextCurrent(window);
 
-    if (glewInit() != GLEW_OK)
+    if (glewInit()!=GLEW_OK)
+    {
+        std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
-
-    std::vector<float> vertices = {
- 0.5f,  0.5f, 0.0f,  // top right
-     0.5f, -0.5f, 0.0f,  // bottom right
-    -0.5f, -0.5f, 0.0f,  // bottom left
-    -0.5f,  0.5f, 0.0f
-    };
-
-
-    std::vector<unsigned int> indices = {
-        0, 1, 3,   // first triangle
-    1, 2, 3
-    };
-
-    Object player(vertices,indices, 3);
+    }
 
     Shader shader;
 
-    shader.use();
+
+    Object object;
+    object.CreateCircle(0.5,120);
+    
 
     while (!glfwWindowShouldClose(window))
-    {     
+    {
+
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
        
-        player.DrawElements();
+        shader.use();
+        glBindVertexArray(object.VAO);
+        object.DrawCirlce();
 
         glfwSwapBuffers(window);
-  
         glfwPollEvents();
     }
 
     glfwTerminate();
     return 0;
 }
+

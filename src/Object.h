@@ -1,23 +1,21 @@
-#ifndef OBJECT_H
-#define OBJECT_H
 
 #include"shader.h"
-#define SHADER_H
+
 
 class Object
 {
 public:
 	Object();
-	Object(std::vector<float> vertex, unsigned int stride);
-	Object(std::vector<float> vertex,std::vector<unsigned int> indices, unsigned int stride);
-	Object(std::vector<float> vertex,std::vector<unsigned int> indices, glm::vec3 startPosition, unsigned int stride);
-	Object(std::vector<float> vertex,glm::vec3 startPosition,unsigned int stride);
 	~Object();
 
 
 	//Functions
-	void Draw();
-	void DrawElements();
+	void DrawCube();
+	void DrawTriangle();
+	void DrawCirlce();
+	void CreateCube();
+	void CreateTriangle();
+	void CreateCircle(float radius, int vCount);
 
 
 public:
@@ -26,11 +24,28 @@ public:
 	unsigned int IBO;
 	unsigned int size;
 	unsigned int elements;
+
+
 	glm::vec3 position;
 	glm::vec3 changePos;
 	glm::mat4 model;
 	bool obstacle;
+
+private:
+	float vertices[9] = {
+	-0.5f, -0.5f, 0.0f,
+	 0.5f, -0.5f, 0.0f,
+	 0.0f,  0.5f, 0.0f
+	};
+
+	float vertex[12] = { 0.5f,  0.5f, 0.0f,
+	 0.5f, -0.5f, 0.0f,
+	-0.5f, -0.5f, 0.0f,
+	-0.5f,  0.5f, 0.0f };
+	unsigned int indices[6] = {
+	  0, 1, 3,
+	  1, 2, 3
+	};
 };
 
-#endif
 
