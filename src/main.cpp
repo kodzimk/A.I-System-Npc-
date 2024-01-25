@@ -44,10 +44,13 @@ int main()
 
 
     Object object;
-    object.CreateCube();
+    object.CreateCube(glm::vec3(0.5f,0.5f,1.0f));
+    std::cout << object.height;
     
     Object player;
-    player.CreateCircle(0.5,120);
+    player.CreateCircle(0.1,120,glm::vec3(1.0f,1.0f,1.0f));
+    player.translate(1.0f, 0.0f, 0.0f);
+
     
 
     while (!glfwWindowShouldClose(window))
@@ -61,6 +64,8 @@ int main()
         object.DrawCube(shader.program);
         glBindVertexArray(player.VAO);
         player.DrawCirlce(shader.program);
+
+       
 
         glfwSwapBuffers(window);
         glfwPollEvents();

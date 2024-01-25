@@ -9,14 +9,15 @@ public:
 
 
 	//Functions
-	void DrawCube();
-	void DrawTriangle();
-	void DrawCirlce();
-	void CreateCube();
-	void CreateTriangle();
-	void CreateCircle(float radius, int vCount);
+	void DrawCube(unsigned int shader);
+	void DrawTriangle(unsigned int shader);
+	void DrawCirlce(unsigned int shader);
+	void CreateCube(glm::vec3 scale);
+	void CreateTriangle(glm::vec3 scale);
+	void CreateCircle(float radius, int vCount, glm::vec3 scale);
 	void SetVisibilty(bool visibilty);
-	bool isCollide(Object object);
+	bool isCollide(glm::vec3 position, float width, float height);
+	void translate(float x, float y, float z);
 
 
 public:
@@ -31,6 +32,7 @@ public:
 	glm::mat4 model;
 	int width;
 	int height;
+	glm::vec3 scale;
 	bool obstacle;
 
 private:

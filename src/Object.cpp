@@ -4,6 +4,7 @@ Object::Object()
 {
 	position = { 0.0f,0.0f,0.0f };
 	changePos = { 0.0f,0.0f,0.0f };
+	scale = { 0.0f,0.0f,0.0f };
 	model = glm::mat4(1.0f);
 	obstacle = false;
 	VBO = 0;
@@ -20,28 +21,31 @@ Object::~Object()
 	glDeleteBuffers(1, &IBO);
 }
 
-void Object::DrawTriangle()
+void Object::DrawTriangle(unsigned int shader)
 {
 	GLCall(glBindVertexArray(this->VAO));
+	glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(model));
 	GLCall(glDrawArrays(GL_TRIANGLES, 0, size));
 	GLCall(glBindVertexArray(0));
 }
 
-void Object::DrawCirlce()
+void Object::DrawCirlce(unsigned int shader)
 {
 	GLCall(glBindVertexArray(VAO));
+	glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(model));
 	GLCall(glDrawArrays(GL_TRIANGLES, 0, size));
 	GLCall(glBindVertexArray(0));
 }
 
-void Object::DrawCube()
+void Object::DrawCube(unsigned int shader)
 {
 		GLCall(glBindVertexArray(VAO));
+		glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(model));
 		GLCall(glDrawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT, 0));
 		glBindVertexArray(0);
 }
 
-void Object::CreateCube()
+void Object::CreateCube(glm::vec3 scale)
 {
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -65,11 +69,13 @@ void Object::CreateCube()
 
 	elements = 6;
 	size = 0;
-	width = 1.f;
-	height = 1.0f;
+	width =  scale.x;
+	height =  scale.y;
+
+	model = glm::scale(model, scale);
 }
 
-void Object::CreateTriangle()
+void Object::CreateTriangle(glm::vec3 scale)
 {
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -90,9 +96,13 @@ void Object::CreateTriangle()
 
 	elements = 0;
 	size = 3;
+	width =  scale.x;
+	height =  scale.y;
+
+	model = glm::scale(model, scale);
 }
 
-void Object::CreateCircle(float radius,int vCount)
+void Object::CreateCircle(float radius,int vCount, glm::vec3 scale)
 {
 	std::vector<glm::vec3>vertices;
 	float angle = 360.0f / vCount;
@@ -136,6 +146,10 @@ void Object::CreateCircle(float radius,int vCount)
 	glBindVertexArray(0);
 
 	size = vertices.size();
+	width = radius* 2 * scale.x;
+	height = radius*2 * scale.y;
+
+	model = glm::scale(model, scale);
 }
 
 void Object::SetVisibilty(bool visibility)
@@ -143,7 +157,7 @@ void Object::SetVisibilty(bool visibility)
 	isCollisionEnable = visibility;
 }
 
-bool Object::isCollide(Object object)
+bool Object::isCollide(glm::vec3 position,float width,float height)
 {
 	glm::vec3 box1right;
 	glm::vec3 box1Left;
@@ -157,11 +171,11 @@ bool Object::isCollide(Object object)
 	box1Left.x = position.x + width;
 	box1Left.y = position.y + height;
 
-	box2right.x = object.position.x;
-	box2right.y = object.position.y;
+	box2right.x = position.x;
+	box2right.y = position.y;
 
-	box2Left.x = object.width + object.position.x;
-	box2Left.y = object.height + object.position.y;
+	box2Left.x = width + position.x;
+	box2Left.y = height + position.y;
 
 	if (box2right.x <= box1Left.x &&
 		box2Left.x >= box1right.x &&
@@ -172,5 +186,14 @@ bool Object::isCollide(Object object)
 	}
 
 	return false;
+}
+
+void Object::translate(float x, float y, float z)
+{
+	position.x += x / width;
+	position.y += y / height;
+	position.z += z;
+
+	model = glm::translate(model, glm::vec3(x,y,z));
 }
 
