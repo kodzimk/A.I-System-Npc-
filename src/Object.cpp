@@ -96,8 +96,9 @@ void Object::CreateTriangle(glm::vec3 scale)
 
 	elements = 0;
 	size = 3;
+
 	width =  scale.x;
-	height =  scale.y;
+	height = scale.y;
 
 	model = glm::scale(model, scale);
 }
@@ -146,8 +147,8 @@ void Object::CreateCircle(float radius,int vCount, glm::vec3 scale)
 	glBindVertexArray(0);
 
 	size = vertices.size();
-	width = radius* 2 * scale.x;
-	height = radius*2 * scale.y;
+	width = radius* scale.x;
+	height = radius* scale.y;
 
 	model = glm::scale(model, scale);
 }
@@ -159,17 +160,20 @@ void Object::SetVisibilty(bool visibility)
 
 bool Object::isCollide(glm::vec3 position,float width,float height)
 {
+	actualPos.x = position.x * this->width;
+	actualPos.y = position.y * this->height;
+
 	glm::vec3 box1right;
 	glm::vec3 box1Left;
 
 	glm::vec3 box2right;
 	glm::vec3 box2Left;
 
-	box1right.x = position.x;
-	box1right.y = position.y;
+	box1right.x = this->actualPos.x;
+	box1right.y = this->actualPos.y;
 
-	box1Left.x = position.x + width;
-	box1Left.y = position.y + height;
+	box1Left.x = this->actualPos.x + this->width;
+	box1Left.y = this->actualPos.y + this->height;
 
 	box2right.x = position.x;
 	box2right.y = position.y;
@@ -190,9 +194,11 @@ bool Object::isCollide(glm::vec3 position,float width,float height)
 
 void Object::translate(float x, float y, float z)
 {
-	position.x += x / width;
-	position.y += y / height;
-	position.z += z;
+	position.x =position.x + x;
+	position.y =position.y + y;
+
+	position.x = position.x * width;
+	position.y = position.y * height;
 
 	model = glm::translate(model, glm::vec3(x,y,z));
 }

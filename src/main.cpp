@@ -44,13 +44,14 @@ int main()
 
 
     Object object;
-    object.CreateCube(glm::vec3(0.5f,0.5f,1.0f));
-    std::cout << object.height;
+    object.CreateCube(glm::vec3(1.f, 1.0f, 1.0f));
+ 
     
     Object player;
     player.CreateCircle(0.1,120,glm::vec3(1.0f,1.0f,1.0f));
-    player.translate(1.0f, 0.0f, 0.0f);
+    player.translate(0.7f, 0.0f, 0.0f);
 
+    
     
 
     while (!glfwWindowShouldClose(window))
@@ -65,8 +66,9 @@ int main()
         glBindVertexArray(player.VAO);
         player.DrawCirlce(shader.program);
 
-       
+        std::cout << object.isCollide(player.position,player.width,player.height)<<std::endl;
 
+        
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

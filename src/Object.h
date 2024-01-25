@@ -30,11 +30,13 @@ public:
 	glm::vec3 position;
 	glm::vec3 changePos;
 	glm::mat4 model;
-	int width;
-	int height;
+	float width;
+	float height;
 	glm::vec3 scale;
 	bool obstacle;
 
+
+	glm::vec3 actualPos;
 private:
 	float vertices[9] = {
 	-0.5f, -0.5f, 0.0f,
