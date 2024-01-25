@@ -8,13 +8,10 @@ Object::Object()
 	obstacle = false;
 	VBO = 0;
 	VAO = 0;
-
-
-
+	isCollisionEnable = true;
 
 	elements = 0;
 }
-
 
 Object::~Object()
 {
@@ -25,7 +22,7 @@ Object::~Object()
 
 void Object::DrawTriangle()
 {
-	GLCall(glBindVertexArray(VAO));
+	GLCall(glBindVertexArray(this->VAO));
 	GLCall(glDrawArrays(GL_TRIANGLES, 0, size));
 	GLCall(glBindVertexArray(0));
 }
@@ -68,6 +65,8 @@ void Object::CreateCube()
 
 	elements = 6;
 	size = 0;
+	width = 1.f;
+	height = 1.0f;
 }
 
 void Object::CreateTriangle()
@@ -139,4 +138,39 @@ void Object::CreateCircle(float radius,int vCount)
 	size = vertices.size();
 }
 
+void Object::SetVisibilty(bool visibility)
+{
+	isCollisionEnable = visibility;
+}
+
+bool Object::isCollide(Object object)
+{
+	glm::vec3 box1right;
+	glm::vec3 box1Left;
+
+	glm::vec3 box2right;
+	glm::vec3 box2Left;
+
+	box1right.x = position.x;
+	box1right.y = position.y;
+
+	box1Left.x = position.x + width;
+	box1Left.y = position.y + height;
+
+	box2right.x = object.position.x;
+	box2right.y = object.position.y;
+
+	box2Left.x = object.width + object.position.x;
+	box2Left.y = object.height + object.position.y;
+
+	if (box2right.x <= box1Left.x &&
+		box2Left.x >= box1right.x &&
+		box2right.y <= box1Left.y &&
+		box2Left.y >= box1right.y)
+	{
+		return true;
+	}
+
+	return false;
+}
 

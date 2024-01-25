@@ -1,4 +1,3 @@
-
 #include"shader.h"
 
 
@@ -16,6 +15,8 @@ public:
 	void CreateCube();
 	void CreateTriangle();
 	void CreateCircle(float radius, int vCount);
+	void SetVisibilty(bool visibilty);
+	bool isCollide(Object object);
 
 
 public:
@@ -25,10 +26,11 @@ public:
 	unsigned int size;
 	unsigned int elements;
 
-
 	glm::vec3 position;
 	glm::vec3 changePos;
 	glm::mat4 model;
+	int width;
+	int height;
 	bool obstacle;
 
 private:
@@ -46,6 +48,8 @@ private:
 	  0, 1, 3,
 	  1, 2, 3
 	};
+
+	bool isCollisionEnable;
 };
 
 

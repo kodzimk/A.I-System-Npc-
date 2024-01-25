@@ -44,19 +44,23 @@ int main()
 
 
     Object object;
-    object.CreateCircle(0.5,120);
+    object.CreateCube();
+    
+    Object player;
+    player.CreateCircle(0.5,120);
     
 
     while (!glfwWindowShouldClose(window))
     {
-
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
        
         shader.use();
         glBindVertexArray(object.VAO);
-        object.DrawCirlce();
+        object.DrawCube(shader.program);
+        glBindVertexArray(player.VAO);
+        player.DrawCirlce(shader.program);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
