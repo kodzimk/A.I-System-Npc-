@@ -44,12 +44,12 @@ int main()
 
 
     Object object;
-    object.CreateCube(glm::vec3(1.f, 1.0f, 1.0f));
- 
+    object.CreateCube(glm::vec3(0.5f, 0.5f, 1.0f));
+    object.translate(-0.5f, 0.0f, 0.0f);
     
     Object player;
-    player.CreateCube(glm::vec3(1.0f,1.0f,1.0f));
-    player.translate(1.0f, 0.0f, 0.0f);
+    player.CreateCube(glm::vec3(0.3f,1.f,1.0f));
+    player.translate(0.4f, 0.0f, 0.0f);
 
     
     
@@ -66,7 +66,7 @@ int main()
         glBindVertexArray(player.VAO);
         player.DrawCube(shader.program);
 
-        std::cout << object.isCollide(player.actualPos,player.width,player.height,player.isCollisionEnable)<<std::endl;
+        std::cout << object.isCollide(player.position,player.width,player.height,player.isCollisionEnable)<<std::endl;
 
         
         glfwSwapBuffers(window);

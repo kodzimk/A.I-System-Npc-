@@ -3,7 +3,6 @@
 Object::Object()
 {
 	position = { 0.0f,0.0f,0.0f };
-	changePos = { 0.0f,0.0f,0.0f };
 	scale = { 0.0f,0.0f,0.0f };
 	model = glm::mat4(1.0f);
 	actualPos = { 0.0f,0.0f,0.0f };
@@ -150,8 +149,8 @@ void Object::CreateCircle(float radius,int vCount, glm::vec3 scale)
 	glBindVertexArray(0);
 
 	size = vertices.size();
-	width = scale.x;
-	height = scale.y;
+	width = radius * 2*scale.x;
+	height = radius *2*scale.y;
 
 	model = glm::scale(model, scale);
 
@@ -167,11 +166,11 @@ bool Object::isCollide(glm::vec3 position,float width,float height,bool Colision
 {
 	if (Colision == true && isCollisionEnable == true)
 	{
-		glm::vec3 box1right = { actualPos.x,actualPos.y,actualPos.z };
+		glm::vec3 box1right = { this->position.x,this->position.y,actualPos.z };
 		glm::vec3 box1Left = { this->actualPos.x + this->width,this->actualPos.y + this->height,this->actualPos.z };
 
 		glm::vec3 box2right = { position.x,position.y,position.z };
-		glm::vec3 box2Left = { width + position.x,height + position.y ,position.z };
+		glm::vec3 box2Left = { width  + position.x ,height + position.y ,position.z };
 
 		if (box2right.x <= box1Left.x &&
 			box2Left.x >= box1right.x &&
@@ -186,11 +185,12 @@ bool Object::isCollide(glm::vec3 position,float width,float height,bool Colision
 
 void Object::translate(float x, float y, float z)
 {
+
 	position.x = position.x + x;
 	position.y = position.y + y;
 
-	actualPos.x = position.x * width;
-	actualPos.y = position.y * height;
+	
+
 
 	model = glm::translate(model, glm::vec3(x,y,z));
 }
