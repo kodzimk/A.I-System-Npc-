@@ -1,7 +1,9 @@
-#include "Object.h"
+#include "Enemy.h"
 
-Object::Object()
+Enemy::Enemy()
 {
+	this->isChase = false;
+	this->chasePos = { 0.0f,0.0f,0.0f };
 	position = { 0.0f,0.0f,0.0f };
 	scale = { 0.0f,0.0f,0.0f };
 	model = glm::mat4(1.0f);
@@ -14,14 +16,14 @@ Object::Object()
 	elements = 0;
 }
 
-Object::~Object()
+Enemy::~Enemy()
 {
 	glDeleteBuffers(1, &VBO);
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &IBO);
 }
 
-void Object::DrawTriangle(unsigned int shader)
+void Enemy::DrawTriangle(unsigned int shader)
 {
 	GLCall(glBindVertexArray(this->VAO));
 	glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(model));
@@ -29,7 +31,7 @@ void Object::DrawTriangle(unsigned int shader)
 	GLCall(glBindVertexArray(0));
 }
 
-void Object::DrawCirlce(unsigned int shader)
+void Enemy::DrawCirlce(unsigned int shader)
 {
 	GLCall(glBindVertexArray(VAO));
 	glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(model));
@@ -37,15 +39,15 @@ void Object::DrawCirlce(unsigned int shader)
 	GLCall(glBindVertexArray(0));
 }
 
-void Object::DrawCube(unsigned int shader)
+void Enemy::DrawCube(unsigned int shader)
 {
-		GLCall(glBindVertexArray(VAO));
-		glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(model));
-		GLCall(glDrawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT, 0));
-		glBindVertexArray(0);
+	GLCall(glBindVertexArray(VAO));
+	glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, glm::value_ptr(model));
+	GLCall(glDrawElements(GL_TRIANGLES, elements, GL_UNSIGNED_INT, 0));
+	glBindVertexArray(0);
 }
 
-void Object::CreateCube(glm::vec3 scale)
+void Enemy::CreateCube(glm::vec3 scale)
 {
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -69,14 +71,14 @@ void Object::CreateCube(glm::vec3 scale)
 
 	elements = 6;
 	size = 0;
-	width =  scale.x;
-	height =  scale.y;
+	width = scale.x;
+	height = scale.y;
 
 	model = glm::scale(model, scale);
 	isCollisionEnable = true;
 }
 
-void Object::CreateTriangle(glm::vec3 scale)
+void Enemy::CreateTriangle(glm::vec3 scale)
 {
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -98,14 +100,14 @@ void Object::CreateTriangle(glm::vec3 scale)
 	elements = 0;
 	size = 3;
 
-	width =  scale.x;
+	width = scale.x;
 	height = scale.y;
 
 	model = glm::scale(model, scale);
 	isCollisionEnable = true;
 }
 
-void Object::CreateCircle(float radius,int vCount, glm::vec3 scale)
+void Enemy::CreateCircle(float radius, int vCount, glm::vec3 scale)
 {
 	std::vector<glm::vec3>vertices;
 	float angle = 360.0f / vCount;
@@ -138,7 +140,7 @@ void Object::CreateCircle(float radius,int vCount, glm::vec3 scale)
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3)*vertices.size(), vertices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
@@ -149,20 +151,20 @@ void Object::CreateCircle(float radius,int vCount, glm::vec3 scale)
 	glBindVertexArray(0);
 
 	size = vertices.size();
-	width = radius * 2*scale.x;
-	height = radius *2*scale.y;
+	width = radius * 2 * scale.x;
+	height = radius * 2 * scale.y;
 
 	model = glm::scale(model, scale);
 
 	isCollisionEnable = true;
 }
 
-void Object::SetVisibilty(bool visibility)
+void Enemy::SetVisibilty(bool visibility)
 {
 	isCollisionEnable = visibility;
 }
 
-bool Object::isCollide(glm::vec3 position,float width,float height,bool Colision)
+bool Enemy::isCollide(glm::vec3 position, float width, float height, bool Colision)
 {
 	if (Colision == true && isCollisionEnable == true)
 	{
@@ -170,7 +172,7 @@ bool Object::isCollide(glm::vec3 position,float width,float height,bool Colision
 		glm::vec3 box1Left = { this->actualPos.x + this->width,this->actualPos.y + this->height,this->actualPos.z };
 
 		glm::vec3 box2right = { position.x,position.y,position.z };
-		glm::vec3 box2Left = { width  + position.x ,height + position.y ,position.z };
+		glm::vec3 box2Left = { width + position.x ,height + position.y ,position.z };
 
 		if (box2right.x <= box1Left.x &&
 			box2Left.x >= box1right.x &&
@@ -183,12 +185,12 @@ bool Object::isCollide(glm::vec3 position,float width,float height,bool Colision
 	return false;
 }
 
-void Object::translate(float x, float y, float z)
+void Enemy::translate(float x, float y, float z)
 {
 
 	position.x = position.x + x;
 	position.y = position.y + y;
 
-	model = glm::translate(model, glm::vec3(x,y,z));
+	model = glm::translate(model, glm::vec3(x, y, z));
 }
 

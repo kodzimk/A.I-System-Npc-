@@ -4,16 +4,13 @@
 #include <iostream>
 
 #include"Object.h"
-using namespace std;
+#include"Enemy.h"
 
-// settings
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 int main()
 {
-    // glfw: initialize and configure
-    // ------------------------------
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -52,7 +49,7 @@ int main()
     player.translate(0.4f, 0.0f, 0.0f);
 
     
-    
+    Enemy enemy;
 
     while (!glfwWindowShouldClose(window))
     {
