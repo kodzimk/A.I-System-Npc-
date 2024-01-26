@@ -16,7 +16,7 @@ public:
 	void CreateTriangle(glm::vec3 scale);
 	void CreateCircle(float radius, int vCount, glm::vec3 scale);
 	void SetVisibilty(bool visibilty);
-	bool isCollide(glm::vec3 position, float width, float height);
+	bool isCollide(glm::vec3 position, float width, float height,bool collide);
 	void translate(float x, float y, float z);
 
 
@@ -30,13 +30,14 @@ public:
 	glm::vec3 position;
 	glm::vec3 changePos;
 	glm::mat4 model;
+	glm::vec3 scale;
+	glm::vec3 actualPos;
 	float width;
 	float height;
-	glm::vec3 scale;
 	bool obstacle;
+	bool isCollisionEnable;
 
 
-	glm::vec3 actualPos;
 private:
 	float vertices[9] = {
 	-0.5f, -0.5f, 0.0f,
@@ -53,7 +54,7 @@ private:
 	  1, 2, 3
 	};
 
-	bool isCollisionEnable;
+
 };
 
 

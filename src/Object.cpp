@@ -6,6 +6,7 @@ Object::Object()
 	changePos = { 0.0f,0.0f,0.0f };
 	scale = { 0.0f,0.0f,0.0f };
 	model = glm::mat4(1.0f);
+	actualPos = { 0.0f,0.0f,0.0f };
 	obstacle = false;
 	VBO = 0;
 	VAO = 0;
@@ -73,6 +74,7 @@ void Object::CreateCube(glm::vec3 scale)
 	height =  scale.y;
 
 	model = glm::scale(model, scale);
+	isCollisionEnable = true;
 }
 
 void Object::CreateTriangle(glm::vec3 scale)
@@ -101,6 +103,7 @@ void Object::CreateTriangle(glm::vec3 scale)
 	height = scale.y;
 
 	model = glm::scale(model, scale);
+	isCollisionEnable = true;
 }
 
 void Object::CreateCircle(float radius,int vCount, glm::vec3 scale)
@@ -147,10 +150,12 @@ void Object::CreateCircle(float radius,int vCount, glm::vec3 scale)
 	glBindVertexArray(0);
 
 	size = vertices.size();
-	width = radius* scale.x;
-	height = radius* scale.y;
+	width = scale.x;
+	height = scale.y;
 
 	model = glm::scale(model, scale);
+
+	isCollisionEnable = true;
 }
 
 void Object::SetVisibilty(bool visibility)
@@ -158,47 +163,34 @@ void Object::SetVisibilty(bool visibility)
 	isCollisionEnable = visibility;
 }
 
-bool Object::isCollide(glm::vec3 position,float width,float height)
+bool Object::isCollide(glm::vec3 position,float width,float height,bool Colision)
 {
-	actualPos.x = position.x * this->width;
-	actualPos.y = position.y * this->height;
-
-	glm::vec3 box1right;
-	glm::vec3 box1Left;
-
-	glm::vec3 box2right;
-	glm::vec3 box2Left;
-
-	box1right.x = this->actualPos.x;
-	box1right.y = this->actualPos.y;
-
-	box1Left.x = this->actualPos.x + this->width;
-	box1Left.y = this->actualPos.y + this->height;
-
-	box2right.x = position.x;
-	box2right.y = position.y;
-
-	box2Left.x = width + position.x;
-	box2Left.y = height + position.y;
-
-	if (box2right.x <= box1Left.x &&
-		box2Left.x >= box1right.x &&
-		box2right.y <= box1Left.y &&
-		box2Left.y >= box1right.y)
+	if (Colision == true && isCollisionEnable == true)
 	{
-		return true;
-	}
+		glm::vec3 box1right = { actualPos.x,actualPos.y,actualPos.z };
+		glm::vec3 box1Left = { this->actualPos.x + this->width,this->actualPos.y + this->height,this->actualPos.z };
 
+		glm::vec3 box2right = { position.x,position.y,position.z };
+		glm::vec3 box2Left = { width + position.x,height + position.y ,position.z };
+
+		if (box2right.x <= box1Left.x &&
+			box2Left.x >= box1right.x &&
+			box2right.y <= box1Left.y &&
+			box2Left.y >= box1right.y)
+		{
+			return true;
+		}
+	}
 	return false;
 }
 
 void Object::translate(float x, float y, float z)
 {
-	position.x =position.x + x;
-	position.y =position.y + y;
+	position.x = position.x + x;
+	position.y = position.y + y;
 
-	position.x = position.x * width;
-	position.y = position.y * height;
+	actualPos.x = position.x * width;
+	actualPos.y = position.y * height;
 
 	model = glm::translate(model, glm::vec3(x,y,z));
 }
