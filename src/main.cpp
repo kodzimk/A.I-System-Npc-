@@ -42,18 +42,23 @@ int main()
 
     Object object;
     object.CreateCube(glm::vec3(0.5f, 0.5f, 1.0f));
-    object.translate(-1.3f, 1.3f, 0.0f);
+    object.translate(1.3f, -1.3f, 0.0f);
     object.SetVisibilty(true);
 
     Object object1;
     object1.CreateCube(glm::vec3(0.5f, 0.5f, 1.0f));
-    object1.translate(-0.4f, -0.4f, 0.0f);
-    object1.SetVisibilty(false);
+    object1.translate(-1.4f, -0.4f, 0.0f);
+    object1.SetVisibilty(true);
+
+    Object object2;
+    object2.CreateCube(glm::vec3(0.2f, 0.2f, 1.0f));
+    object2.translate(-0.4f, -1.0f, 0.0f);
+    object2.SetVisibilty(true);
     
     
     Enemy enemy;
     enemy.CreateCube(glm::vec3(0.5f, 0.5f, 1.0f));
-    enemy.translate(1.3f, -1.3f, 0.0);
+    enemy.translate(-1.3f, 1.3f, 0.0);
 
     std::vector<glm::vec3>positions;
     positions.push_back(object1.actualPos);
@@ -66,6 +71,11 @@ int main()
 
     std::vector<bool>collsions;
     collsions.push_back(object1.isCollisionEnable);
+
+    positions.push_back(object2.actualPos);
+    widths.push_back(object2.width);
+    heights.push_back(object2.height);
+    collsions.push_back(object2.isCollisionEnable);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -81,11 +91,13 @@ int main()
         glBindVertexArray(object1.VAO);
         object1.DrawCube(shader.program);
 
+        glBindVertexArray(object2.VAO);
+        object2.DrawCube(shader.program);
+    
 
         enemy.Chase(positions,widths,heights,collsions, 
                    object.actualPos, object.width, object.height,
                    object.isCollisionEnable);
-       
 
         
         glfwSwapBuffers(window);
