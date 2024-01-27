@@ -236,11 +236,18 @@ void Enemy::isCanMove(
 	actualPos.x = this->position.x * this->width;
 	actualPos.y = this->position.y * this->height;
 
+	
+	
+
 	if (isChase)
 	{
 		if (direction == DIRECTION::IDLE)
 		{
+
+			DIRECTION firstDirection[50];
 			bool isColliisionVolume = false;
+			int count = 0;
+
 			for (int i = 0; i < positions.size(); i++)
 			{
 				if (this->actualPos.y > position.y)
@@ -259,7 +266,13 @@ void Enemy::isCanMove(
 					if (!isColliisionVolume)
 					{
 						direction = DIRECTION::DOWN;
-						break;
+
+						if (i != positions.size() - 1)
+						{
+							firstDirection[count] = DIRECTION::DOWN;
+							count++;
+						}
+						
 					}
 
 					isColliisionVolume = false;
@@ -280,7 +293,13 @@ void Enemy::isCanMove(
 					if (!isColliisionVolume)
 					{
 						direction = DIRECTION::UP;
-						break;
+
+						if (i != positions.size() - 1)
+						{
+							firstDirection[count] = DIRECTION::UP;
+							count++;
+						}
+						
 					}
 
 					isColliisionVolume = false;
@@ -300,7 +319,12 @@ void Enemy::isCanMove(
 					if (!isColliisionVolume)
 					{
 						direction = DIRECTION::RIGHT;
-						break;
+						if (i != positions.size() - 1)
+						{
+							firstDirection[count] = DIRECTION::RIGHT;
+							count++;
+						}
+						
 					}
 
 					isColliisionVolume = false;
@@ -321,10 +345,24 @@ void Enemy::isCanMove(
 					if (!isColliisionVolume)
 					{
 						direction = DIRECTION::LEFT;
-						break;
+
+						if (i != positions.size() - 1)
+						{
+							firstDirection[count] = DIRECTION::LEFT;
+							count++;
+						}
+						
 					}
 					isColliisionVolume = false;
-				}				
+				}
+
+				
+			}
+
+			for (int i = 0; i < count; i++)
+			{
+				if (direction != firstDirection[i])
+					direction = firstDirection[i];
 			}
 		}
 
@@ -365,7 +403,7 @@ void Enemy::isCanMove(
 
 					}
 					else if (isCollideVolume)
-						direction = DIRECTION::LEFT;
+						direction = DIRECTION::RIGHT;
 
 					isCollideVolume = false;
 					isCollideObject = false;
@@ -396,7 +434,7 @@ void Enemy::isCanMove(
 						direction = DIRECTION::LEFT;
 					}
 					else if (isCollideVolume)
-						direction = DIRECTION::LEFT;
+						direction = DIRECTION::RIGHT;
 
 
 					isCollideVolume = false;
@@ -405,7 +443,7 @@ void Enemy::isCanMove(
 				if (this->actualPos.y > position.y)
 				{
 					for (int j = 0; j < 100; j++) {
-						if (isCollide(glm::vec3(position.x - 0.2f, (position.y + float(j) * 0.05f) * height, position.z), width, height, isCollde)) {
+						if (isCollide(glm::vec3(position.x + 0.2f, (position.y + float(j) * 0.05f) * height, position.z), width, height, isCollde)) {
 							isCollideObject = true;
 							j = 100;
 						}
@@ -413,7 +451,7 @@ void Enemy::isCanMove(
 
 					for (int k = 0; k < 100; k++)
 					{
-						if (isCollide(glm::vec3(positions[i].x, (positions[i].y + float(k) * 0.05f) * heights[i], positions[i].z), widths[i], heights[i], collisions[i]))
+						if (isCollide(glm::vec3(positions[i].x + 0.2f, (positions[i].y + float(k) * 0.05f) * heights[i], positions[i].z), widths[i], heights[i], collisions[i]))
 						{
 							isCollideVolume = true;
 							k = 100;
@@ -426,7 +464,7 @@ void Enemy::isCanMove(
 
 					}
 					else if (isCollideVolume)
-						direction = DIRECTION::LEFT;
+						direction = DIRECTION::RIGHT;
 
 					isCollideVolume = false;
 					isCollideObject = false;
@@ -434,7 +472,7 @@ void Enemy::isCanMove(
 				if (this->actualPos.y < position.y) {
 					for (int j = 0; j < 100; j++)
 					{
-						if (isCollide(glm::vec3(position.x - 0.2f, (position.y - j * 0.05f) * height, position.z), width, height, isCollde))
+						if (isCollide(glm::vec3(position.x + 0.2f, (position.y - j * 0.05f) * height, position.z), width, height, isCollde))
 						{
 							isCollideObject = true;
 							j = 100;
@@ -444,7 +482,7 @@ void Enemy::isCanMove(
 
 					for (int k = 0; k < 100; k++)
 					{
-						if (isCollide(glm::vec3(positions[i].x, (position.y - k * 0.05f) * heights[i], positions[i].z), widths[i], heights[i], collisions[i]))
+						if (isCollide(glm::vec3(positions[i].x + 0.2f, (position.y - k * 0.05f) * heights[i], positions[i].z), widths[i], heights[i], collisions[i]))
 						{
 							isCollideVolume = true;
 							k = 100;
@@ -457,7 +495,7 @@ void Enemy::isCanMove(
 
 					}
 					else if (isCollideVolume)
-						direction = DIRECTION::LEFT;
+						direction = DIRECTION::RIGHT;
 
 					isCollideVolume = false;
 					isCollideObject = false;
@@ -475,7 +513,6 @@ void Enemy::isCanMove(
 			bool isCollideVolume = false;
 
 			for (int i = 0; i < positions.size(); i++) {
-
 				if (this->actualPos.x < position.x)
 				{
 					for (int j = 0; j < 100; j++)
@@ -493,7 +530,7 @@ void Enemy::isCanMove(
 							isCollideVolume = true;
 							k = 100;
 						}
-					
+
 					}
 
 					if (!isCollideVolume && isCollideObject)
@@ -502,7 +539,7 @@ void Enemy::isCanMove(
 
 					}
 					else if (isCollideVolume)
-						direction = DIRECTION::UP;
+						direction = DIRECTION::RIGHT;
 
 					isCollideVolume = false;
 					isCollideObject = false;
@@ -511,7 +548,7 @@ void Enemy::isCanMove(
 				{
 					for (int j = 0; j < 100; j++)
 					{
-						if (isCollide(glm::vec3((position.x + float(j) * 0.05f) * width, position.y +0.2f , position.z), width, height, isCollde))
+						if (isCollide(glm::vec3((position.x + float(j) * 0.05f) * width, position.y + 0.2f, position.z), width, height, isCollde))
 						{
 							isCollideObject = true;
 							j = 100;
@@ -521,7 +558,7 @@ void Enemy::isCanMove(
 
 					for (int k = 0; k < 100; k++)
 					{
-						if (isCollide(glm::vec3((positions[i].x + float(k) * 0.05f) * widths[i], positions[i].y +0.2f, positions[i].z), widths[i], heights[i], collisions[i]))
+						if (isCollide(glm::vec3((positions[i].x + float(k) * 0.05f) * widths[i], positions[i].y + 0.2f, positions[i].z), widths[i], heights[i], collisions[i]))
 						{
 							isCollideVolume = true;
 							k = 100;
@@ -532,9 +569,9 @@ void Enemy::isCanMove(
 					{
 						direction = DIRECTION::LEFT;
 					}
-					else if(isCollideVolume)
-						direction = DIRECTION::UP;
-					
+					else if (isCollideVolume)
+						direction = DIRECTION::RIGHT;
+
 
 					isCollideVolume = false;
 					isCollideObject = false;
@@ -542,7 +579,7 @@ void Enemy::isCanMove(
 				if (this->actualPos.y > position.y)
 				{
 					for (int j = 0; j < 100; j++) {
-						if (isCollide(glm::vec3(position.x - 0.2f , (position.y + float(j) * 0.05f) * height, position.z), width, height, isCollde)) {
+						if (isCollide(glm::vec3(position.x + 0.2f, (position.y + float(j) * 0.05f) * height, position.z), width, height, isCollde)) {
 							isCollideObject = true;
 							j = 100;
 						}
@@ -550,7 +587,7 @@ void Enemy::isCanMove(
 
 					for (int k = 0; k < 100; k++)
 					{
-						if (isCollide(glm::vec3(positions[i].x , (positions[i].y + float(k) * 0.05f) * heights[i], positions[i].z), widths[i], heights[i], collisions[i]))
+						if (isCollide(glm::vec3(positions[i].x + 0.2f, (positions[i].y + float(k) * 0.05f) * heights[i], positions[i].z), widths[i], heights[i], collisions[i]))
 						{
 							isCollideVolume = true;
 							k = 100;
@@ -563,7 +600,7 @@ void Enemy::isCanMove(
 
 					}
 					else if (isCollideVolume)
-						direction = DIRECTION::UP;
+						direction = DIRECTION::RIGHT;
 
 					isCollideVolume = false;
 					isCollideObject = false;
@@ -571,7 +608,7 @@ void Enemy::isCanMove(
 				if (this->actualPos.y < position.y) {
 					for (int j = 0; j < 100; j++)
 					{
-						if (isCollide(glm::vec3(position.x -0.2f , (position.y - j * 0.05f) * height, position.z), width, height, isCollde))
+						if (isCollide(glm::vec3(position.x + 0.2f, (position.y - j * 0.05f) * height, position.z), width, height, isCollde))
 						{
 							isCollideObject = true;
 							j = 100;
@@ -581,7 +618,7 @@ void Enemy::isCanMove(
 
 					for (int k = 0; k < 100; k++)
 					{
-						if (isCollide(glm::vec3(positions[i].x , (position.y - k * 0.05f) * heights[i], positions[i].z), widths[i], heights[i], collisions[i]))
+						if (isCollide(glm::vec3(positions[i].x + 0.2f, (position.y - k * 0.05f) * heights[i], positions[i].z), widths[i], heights[i], collisions[i]))
 						{
 							isCollideVolume = true;
 							k = 100;
@@ -591,10 +628,10 @@ void Enemy::isCanMove(
 					if (!isCollideVolume && isCollideObject)
 					{
 						direction = DIRECTION::UP;
-						
+
 					}
 					else if (isCollideVolume)
-						direction = DIRECTION::UP;
+						direction = DIRECTION::RIGHT;
 
 					isCollideVolume = false;
 					isCollideObject = false;
@@ -624,7 +661,7 @@ void Enemy::isCanMove(
 					}
 					for (int k = 0; k < 100; k++)
 					{
-						if (isCollide(glm::vec3((positions[i].x - float(k) * 0.05f) * widths[i], positions[i].y + 0.2f, positions[i].z), widths[i], heights[i], collisions[i]))
+						if (isCollide(glm::vec3((positions[i].x - float(k) * 0.05f) * widths[i], positions[i].y +0.2f , positions[i].z), widths[i], heights[i], collisions[i]))
 						{
 							isCollideVolume = true;
 							k = 100;
@@ -657,7 +694,7 @@ void Enemy::isCanMove(
 
 					for (int k = 0; k < 100; k++)
 					{
-						if (isCollide(glm::vec3((positions[i].x + float(k) * 0.05f) * widths[i], positions[i].y + 0.2f, positions[i].z), widths[i], heights[i], collisions[i]))
+						if (isCollide(glm::vec3((positions[i].x + float(k) * 0.05f) * widths[i], positions[i].y + 0.2f , positions[i].z), widths[i], heights[i], collisions[i]))
 						{
 							isCollideVolume = true;
 							k = 100;
@@ -678,7 +715,7 @@ void Enemy::isCanMove(
 				if (this->actualPos.y > position.y)
 				{
 					for (int j = 0; j < 100; j++) {
-						if (isCollide(glm::vec3(position.x - 0.2f, (position.y + float(j) * 0.05f) * height, position.z), width, height, isCollde)) {
+						if (isCollide(glm::vec3(position.x + 0.2f, (position.y + float(j) * 0.05f) * height, position.z), width, height, isCollde)) {
 							isCollideObject = true;
 							j = 100;
 						}
@@ -686,7 +723,7 @@ void Enemy::isCanMove(
 
 					for (int k = 0; k < 100; k++)
 					{
-						if (isCollide(glm::vec3(positions[i].x, (positions[i].y + float(k) * 0.05f) * heights[i], positions[i].z), widths[i], heights[i], collisions[i]))
+						if (isCollide(glm::vec3(positions[i].x +0.2f, (positions[i].y + float(k) * 0.05f) * heights[i], positions[i].z), widths[i], heights[i], collisions[i]))
 						{
 							isCollideVolume = true;
 							k = 100;
@@ -707,7 +744,7 @@ void Enemy::isCanMove(
 				if (this->actualPos.y < position.y) {
 					for (int j = 0; j < 100; j++)
 					{
-						if (isCollide(glm::vec3(position.x - 0.2f, (position.y - j * 0.05f) * height, position.z), width, height, isCollde))
+						if (isCollide(glm::vec3(position.x + 0.2f, (position.y - j * 0.05f) * height, position.z), width, height, isCollde))
 						{
 							isCollideObject = true;
 							j = 100;
@@ -717,7 +754,7 @@ void Enemy::isCanMove(
 
 					for (int k = 0; k < 100; k++)
 					{
-						if (isCollide(glm::vec3(positions[i].x, (position.y - k * 0.05f) * heights[i], positions[i].z), widths[i], heights[i], collisions[i]))
+						if (isCollide(glm::vec3(positions[i].x + 0.2f, (position.y - k * 0.05f) * heights[i], positions[i].z), widths[i], heights[i], collisions[i]))
 						{
 							isCollideVolume = true;
 							k = 100;

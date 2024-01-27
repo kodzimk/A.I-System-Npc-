@@ -47,7 +47,7 @@ int main()
 
     Object object1;
     object1.CreateCube(glm::vec3(0.5f, 0.5f, 1.0f));
-    object1.translate(-1.4f, -0.4f, 0.0f);
+    object1.translate(0.0f, 1.4f, 0.0f);
     object1.SetVisibilty(true);
 
     Object object2;
