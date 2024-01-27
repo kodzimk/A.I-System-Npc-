@@ -183,13 +183,14 @@ bool Object::isCollide(glm::vec3 position,float width,float height,bool Colision
 	return false;
 }
 
-
-
 void Object::translate(float x, float y, float z)
 {
 
 	position.x = position.x + x;
 	position.y = position.y + y;
+
+	this->actualPos.x = position.x * width;
+	this->actualPos.y = position.y * height;
 
 	model = glm::translate(model, glm::vec3(x,y,z));
 }

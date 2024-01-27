@@ -185,7 +185,6 @@ bool Enemy::isCollide(glm::vec3 position, float width, float height, bool Colisi
 	return false;
 }
 
-
 void Enemy::translate(float x, float y, float z)
 {
 
@@ -214,119 +213,626 @@ bool Enemy::isCollidePosition(glm::vec3 position, float width, float height)
    return false;
 }
 
-void Enemy::Chase(glm::vec3 position,float width,float height,bool isCollide1)
+void Enemy::Chase(std::vector<glm::vec3> positions,glm::vec3 position,float width,float height,bool isCollide1)
 {
-	glm::vec3 actualpos2 = {position.x * width,position.y*height,0.0f };
+	glm::vec3 actualpos2 = position;
 	isChase = true;
 	
 	if(!isCollide(actualpos2,width,height,isCollide1))
-	   isCanMove(actualpos2, width, height, isCollide1);
+	   isCanMove(positions,actualpos2, width, height, isCollide1);
 }
 
-void Enemy::isCanMove(glm::vec3 position, float width, float height,bool isCollde)
+void Enemy::isCanMove(std::vector<glm::vec3> positions,glm::vec3 position, float width, float height,bool isCollde)
 {
 	actualPos.x = this->position.x * this->width;
 	actualPos.y = this->position.y * this->height;
+
 
 
 	if (isChase)
 	{
 		if (direction == DIRECTION::IDLE)
 		{
-			if (this->actualPos.x < position.x)
+			bool isColliisionVolume = false;
+			for (int i = 0; i < positions.size(); i++)
 			{
-				direction = DIRECTION::RIGHT;
+				if (this->actualPos.y > position.y)
+				{
+					for (int k = 0; k < 100; k++)
+					{
+
+						if (isCollide(glm::vec3(positions[i].x, (positions[i].y + k * 0.05f) * height, positions[i].z), width, height, isCollde))
+						{
+							isColliisionVolume = true;
+							k = 100;
+						}
+			
+					}
+
+					if (!isColliisionVolume)
+					{
+						direction = DIRECTION::DOWN;
+						break;
+					}
+
+					isColliisionVolume = false;
+				}
+				else if (this->actualPos.y < position.y)
+				{
+					for (int k = 0; k < 100; k++)
+					{
+						if (isCollide(glm::vec3(positions[i].x, (positions[i].y - float(k) * 0.02f) * height, positions[i].z), width, height, isCollde))
+						{
+							isColliisionVolume = true;
+							k = 100;
+
+						}
+	
+					}
+
+					if (!isColliisionVolume)
+					{
+						direction = DIRECTION::UP;
+						break;
+					}
+
+					isColliisionVolume = false;
+				}
+
+				 if (this->actualPos.x < position.x)
+				{
+					for (int k = 0; k < 100; k++)
+					{
+						if (isCollide(glm::vec3((positions[i].x - k * 0.05f) * width, positions[i].y, positions[i].z), width, height, isCollde))
+						{
+							isColliisionVolume = true;
+							k = 100;
+						}
+
+					}
+					if (!isColliisionVolume)
+					{
+						direction = DIRECTION::RIGHT;
+						break;
+					}
+
+					isColliisionVolume = false;
+				}
+				 else if (this->actualPos.x > position.x)
+				 {
+					for (int k = 0; k < 100; k++)
+					{
+
+						if (isCollide(glm::vec3((positions[i].x + k * 0.05f) * width, positions[i].y, positions[i].z), width, height, isCollde))
+						{
+							isColliisionVolume = true;
+							k = 100;
+						}
+		
+					}
+
+					if (!isColliisionVolume)
+					{
+						direction = DIRECTION::LEFT;
+						break;
+					}
+					isColliisionVolume = false;
+				}				
 			}
-			else
-				direction = DIRECTION::LEFT;
 		}
 
+	    if (direction == DIRECTION::LEFT)
+		{
 
-
-		if (direction == DIRECTION::LEFT)
-		{		
 			if (!isCollide(position, width, height, isCollde))
-				   translate(-0.0001f, 0.0f, 0.0f);
-			else if (this->actualPos.y > position.y|| this->actualPos.x != position.x)
-			{
-				direction = DIRECTION::DOWN;
-			}
-			else
-			{
-				direction = DIRECTION::UP;
-			}
+				translate(-0.0005f, 0.0f, 0.0f);
 
-			if (this->actualPos.y > position.y)
-				direction = DIRECTION::DOWN;
-			else if (this->actualPos.y <= position.y)
-				direction = DIRECTION::UP;
-			
+			bool isCollideObject = false;
+			bool isCollideVolume = false;
+
+			for (int i = 0; i < positions.size(); i++) {
+
+				if (this->actualPos.x < position.x)
+				{
+					for (int j = 0; j < 100; j++)
+					{
+						if (isCollide(glm::vec3((position.x - float(j) * 0.05f) * width, position.y, position.z), width, height, isCollde))
+						{
+							isCollideObject = true;
+							j = 100;
+						}
+					}
+					for (int k = 0; k < 100; k++)
+					{
+						if (isCollide(glm::vec3((positions[i].x - float(k) * 0.05f) * width, positions[i].y, positions[i].z), width, height, isCollde))
+						{
+							isCollideVolume = true;
+						}
+						k = 100;
+					}
+
+					if (!isCollideVolume && isCollideObject)
+					{
+						direction = DIRECTION::RIGHT;
+						break;
+					}
+
+					isCollideVolume = false;
+					isCollideObject = false;
+				}
+				if (this->actualPos.x > position.x)
+				{
+					for (int j = 0; j < 100; j++)
+					{
+						if (isCollide(glm::vec3((position.x + float(j) * 0.05f) * width, position.y, position.z), width, height, isCollde))
+						{
+							isCollideObject = true;
+						}
+
+					}
+
+					for (int k = 0; k < 100; k++)
+					{
+						if (isCollide(glm::vec3((positions[i].x + float(k) * 0.05f) * width, positions[i].y, positions[i].z), width, height, isCollde))
+						{
+							isCollideVolume = true;
+						}
+					}
+
+					if (!isCollideVolume && isCollideObject)
+					{
+						direction = DIRECTION::LEFT;
+						break;
+					}
+
+					isCollideVolume = false;
+					isCollideObject = false;
+				}
+				if (this->actualPos.y > position.y)
+				{
+					for (int j = 0; j < 100; j++) {
+						if (isCollide(glm::vec3(position.x - 0.5f, (position.y + float(j) * 0.05f) * height, position.z), width, height, isCollde)) {
+							isCollideObject = true;
+							j = 100;
+						}
+					}
+
+					for (int k = 0; k < 100; k++)
+					{
+						if (isCollide(glm::vec3(positions[i].x - 0.5f, (positions[i].y + float(k) * 0.05f) * height, positions[i].z), width, height, isCollde))
+						{
+							isCollideVolume = true;
+							k = 100;
+						}
+					}
+
+					if (isCollideVolume == false && isCollideObject == true)
+					{
+						direction = DIRECTION::DOWN;
+						i = positions.size();
+					}
+
+					isCollideVolume = false;
+					isCollideObject = false;
+				}
+				if (this->actualPos.y < position.y) {
+					for (int j = 0; j < 100; j++)
+					{
+						if (isCollide(glm::vec3(position.x - 0.2f, (position.y - j * 0.05f) * height, position.z), width, height, isCollde))
+						{
+							isCollideObject = true;
+							j = 100;
+
+						}
+					}
+
+					for (int k = 0; k < 100; k++)
+					{
+						if (isCollide(glm::vec3(positions[i].x-0.2f, (position.y - k * 0.05f) * height, positions[i].z), width, height, isCollde))
+						{
+							isCollideVolume = true;
+							k = 100;
+						}
+					}
+
+					if (!isCollideVolume && isCollideObject)
+					{
+						direction = DIRECTION::UP;
+						break;
+					}
+
+					isCollideVolume = false;
+					isCollideObject = false;
+				}
+			}
 		}
 
 		if (direction == DIRECTION::UP)
 		{
 			if (!isCollide(position, width, height, isCollde))
-				translate(0.0f, 0.0001f, 0.0f);
-			else if (this->actualPos.x > position.x)
-			{
-				direction = DIRECTION::RIGHT;
+				translate(0.0f, 0.0005f, 0.0f);
+
+
+			bool isCollideObject = false;
+			bool isCollideVolume = false;
+
+			for (int i = 0; i < positions.size(); i++) {
+
+				if (this->actualPos.x < position.x)
+				{
+					for (int j = 0; j < 100; j++)
+					{
+						if (isCollide(glm::vec3((position.x - float(j) * 0.05f) * width, position.y, position.z), width, height, isCollde))
+						{
+							isCollideObject = true;
+							j = 100;
+						}
+					}
+					for (int k = 0; k < 100; k++)
+					{
+						if (isCollide(glm::vec3((positions[i].x - float(k) * 0.05f) * width, positions[i].y, positions[i].z), width, height, isCollde))
+						{
+							isCollideVolume = true;
+						}
+						k = 100;
+					}
+
+					if (!isCollideVolume && isCollideObject)
+					{
+						direction = DIRECTION::RIGHT;
+						break;
+					}
+
+					isCollideVolume = false;
+					isCollideObject = false;
+				}
+				if (this->actualPos.x > position.x)
+				{
+					for (int j = 0; j < 100; j++)
+					{
+						if (isCollide(glm::vec3((position.x + float(j) * 0.05f) * width, position.y, position.z), width, height, isCollde))
+						{
+							isCollideObject = true;
+						}
+
+					}
+
+					for (int k = 0; k < 100; k++)
+					{
+						if (isCollide(glm::vec3((positions[i].x + float(k) * 0.05f) * width, positions[i].y, positions[i].z), width, height, isCollde))
+						{
+							isCollideVolume = true;
+						}
+					}
+
+					if (!isCollideVolume && isCollideObject)
+					{
+						direction = DIRECTION::LEFT;
+						break;
+					}
+
+					isCollideVolume = false;
+					isCollideObject = false;
+				}
+				if (this->actualPos.y > position.y)
+				{
+					for (int j = 0; j < 100; j++) {
+						if (isCollide(glm::vec3(position.x, (position.y + float(j) * 0.05f) * height, position.z), width, height, isCollde)) {
+							isCollideObject = true;
+							j = 100;
+						}
+					}
+
+					for (int k = 0; k < 100; k++)
+					{
+						if (isCollide(glm::vec3(positions[i].x, (positions[i].y + float(k) * 0.05f) * height, positions[i].z), width, height, isCollde))
+						{
+							isCollideVolume = true;
+							k = 100;
+						}
+					}
+
+					if (isCollideVolume == false && isCollideObject == true)
+					{
+						direction = DIRECTION::DOWN;
+						i = positions.size();
+					}
+
+					isCollideVolume = false;
+					isCollideObject = false;
+				}
+				if (this->actualPos.y < position.y) {
+					for (int j = 0; j < 100; j++)
+					{
+						if (isCollide(glm::vec3(position.x, (position.y - j * 0.05f) * height, position.z), width, height, isCollde))
+						{
+							isCollideObject = true;
+							j = 100;
+
+						}
+					}
+
+					for (int k = 0; k < 100; k++)
+					{
+						if (isCollide(glm::vec3(positions[i].x, (position.y - k * 0.05f) * height, positions[i].z), width, height, isCollde))
+						{
+							isCollideVolume = true;
+							k = 100;
+						}
+					}
+
+					if (!isCollideVolume && isCollideObject)
+					{
+						direction = DIRECTION::UP;
+						break;
+					}
+
+					isCollideVolume = false;
+					isCollideObject = false;
+				}
 			}
-			else
-			{
-				direction = DIRECTION::LEFT;
-			}
-
-			if (this->actualPos.x >= position.x)
-				direction = DIRECTION::LEFT;
-			else if (this->actualPos.x < position.x)
-				direction = DIRECTION::RIGHT;
-
-
 		}
 
 		if (direction == DIRECTION::DOWN)
 		{
-			if (!isCollide(position, width, height, isCollde) )
-				translate(0.0f, -0.0001f, 0.0f);
-			else if (this->actualPos.x > position.x)
-			{
-				direction = DIRECTION::LEFT;
-			}
-			else
-				direction = DIRECTION::RIGHT;
+			if (!isCollide(position, width, height, isCollde))
+				translate(0.0f, -0.0005f, 0.0f);
 
-			if (this->actualPos.x > position.x)
-				direction = DIRECTION::LEFT;
-			else if (this->actualPos.x < position.x)
-				direction = DIRECTION::RIGHT;
+			bool isCollideObject = false;
+			bool isCollideVolume = false;
+
+			for (int i = 0; i < positions.size(); i++) {
+
+				if (this->actualPos.x < position.x)
+				{
+					for (int j = 0; j < 100; j++)
+					{
+						if (isCollide(glm::vec3((position.x - float(j) * 0.05f) * width, position.y, position.z), width, height, isCollde))
+						{
+							isCollideObject = true;
+							j = 100;
+						}
+					}
+					for (int k = 0; k < 100; k++)
+					{
+						if (isCollide(glm::vec3((positions[i].x - float(k) * 0.05f) * width, positions[i].y, positions[i].z), width, height, isCollde))
+						{
+							isCollideVolume = true;
+						}
+						k = 100;
+					}
+
+					if (!isCollideVolume && isCollideObject)
+					{
+						direction = DIRECTION::RIGHT;
+						break;
+					}
+
+					isCollideVolume = false;
+					isCollideObject = false;
+				}
+				if (this->actualPos.x > position.x)
+				{
+					for (int j = 0; j < 100; j++)
+					{
+						if (isCollide(glm::vec3((position.x + float(j) * 0.05f) * width, position.y, position.z), width, height, isCollde))
+						{
+							isCollideObject = true;
+						}
+
+					}
+
+					for (int k = 0; k < 100; k++)
+					{
+						if (isCollide(glm::vec3((positions[i].x + float(k) * 0.05f) * width, positions[i].y, positions[i].z), width, height, isCollde))
+						{
+							isCollideVolume = true;
+						}
+					}
+
+					if (!isCollideVolume && isCollideObject)
+					{
+						direction = DIRECTION::LEFT;
+						break;
+					}
+
+					isCollideVolume = false;
+					isCollideObject = false;
+				}
+				if (this->actualPos.y > position.y)
+				{
+					for (int j = 0; j < 100; j++) {
+						if (isCollide(glm::vec3(position.x, (position.y + float(j) * 0.05f) * height, position.z), width, height, isCollde)) {
+							isCollideObject = true;
+							j = 100;
+						}
+					}
+
+					for (int k = 0; k < 100; k++)
+					{
+						if (isCollide(glm::vec3(positions[i].x, (positions[i].y + float(k) * 0.05f) * height, positions[i].z), width, height, isCollde))
+						{
+							isCollideVolume = true;
+							k = 100;
+						}
+					}
+
+					if (isCollideVolume == false && isCollideObject == true)
+					{
+						direction = DIRECTION::DOWN;
+						i = positions.size();
+					}
+
+					isCollideVolume = false;
+					isCollideObject = false;
+				}
+				if (this->actualPos.y < position.y) {
+					for (int j = 0; j < 100; j++)
+					{
+						if (isCollide(glm::vec3(position.x, (position.y - j * 0.05f) * height, position.z), width, height, isCollde))
+						{
+							isCollideObject = true;
+							j = 100;
+
+						}
+					}
+
+					for (int k = 0; k < 100; k++)
+					{
+						if (isCollide(glm::vec3(positions[i].x, (position.y - k * 0.05f) * height, positions[i].z), width, height, isCollde))
+						{
+							isCollideVolume = true;
+							k = 100;
+						}
+					}
+
+					if (!isCollideVolume && isCollideObject)
+					{
+						direction = DIRECTION::UP;
+						break;
+					}
+
+					isCollideVolume = false;
+					isCollideObject = false;
+				}
+			}
 
 		}
 
 		if (direction == DIRECTION::RIGHT)
 		{
 			if (!isCollide(position, width, height, isCollde))
-				translate(0.0001f, 0.f, 0.0f);
-			else if (this->actualPos.y > position.y)
-			{
-				direction = DIRECTION::DOWN;
-			}
-			else
-				direction = DIRECTION::UP;
+				translate(0.0005f, 0.0f, 0.0f);
 
-			if (this->actualPos.y > position.y)
-				direction = DIRECTION::DOWN;
-			else if (this->actualPos.y < position.y)
-				direction = DIRECTION::UP;
+
+			bool isCollideObject = false;
+			bool isCollideVolume = false;
+
+			for (int i = 0; i < positions.size(); i++) {
+
+				if (this->actualPos.x < position.x)
+				{
+					for (int j = 0; j < 100; j++) 
+					{
+						if (isCollide(glm::vec3((position.x - float(j) * 0.1f) * width, position.y, position.z), width, height, isCollde)) 
+						{ 
+							isCollideObject = true;
+							j = 100;
+						}
+					} 
+					for (int k = 0; k < 100; k++) 
+					{ 
+						if (isCollide(glm::vec3((positions[i].x - float(k) * 0.1f) * width, positions[i].y, positions[i].z), width, height, isCollde)) 
+						{ 
+							isCollideVolume = true;
+						}
+						k = 100;
+					} 
+
+					if (!isCollideVolume && isCollideObject)
+					{ 
+						direction = DIRECTION::RIGHT;
+						break; 
+					} 
+
+					isCollideVolume = false; 
+					isCollideObject = false;
+				}
+				if  (this->actualPos.x > position.x) 
+				{
+					for (int j = 0; j < 100; j++)
+					{
+						if (isCollide(glm::vec3((position.x + float(j) * 0.1f) * width, position.y, position.z), width, height, isCollde))
+						{ 
+							isCollideObject = true;
+						}
+
+					} 
+
+					for (int k = 0; k < 100; k++) 
+					{ 
+						if (isCollide(glm::vec3((positions[i].x + float(k) * 0.1f) * width, positions[i].y, positions[i].z), width, height, isCollde))
+						{
+							isCollideVolume = true; 
+						} 
+					}
+
+					if (!isCollideVolume && isCollideObject)
+					{ 
+						direction = DIRECTION::LEFT;
+						break;
+					} 
+
+					isCollideVolume = false; 
+					isCollideObject = false;
+				}
+				if  (this->actualPos.y > position.y)
+				{
+					for (int j = 0; j < 100; j++) { 
+						if (isCollide(glm::vec3(position.x, (position.y + float(j) * 0.1f) * height, position.z), width, height, isCollde)) {
+							isCollideObject = true;
+							j = 100;
+						}
+					} 
+
+					for (int k = 0; k < 100; k++)
+					{
+						if (isCollide(glm::vec3(positions[i].x, (positions[i].y + float(k) * 0.1f) * height, positions[i].z), width, height, isCollde))
+						{ 
+							isCollideVolume = true; 
+							k = 100;
+						}
+					}
+
+					if (isCollideVolume == false && isCollideObject == true) 
+					{
+						direction = DIRECTION::DOWN;
+						i = positions.size();
+					} 
+
+					isCollideVolume = false;
+					isCollideObject = false;
+				}
+				if  (this->actualPos.y < position.y) {
+					for (int j = 0; j < 100; j++)
+					{
+						if (isCollide(glm::vec3(position.x, (position.y - j * 0.1f) * height, position.z), width, height, isCollde))
+						{
+							isCollideObject = true;
+							j = 100;
+
+						}
+					}
+
+					for (int k = 0; k < 100; k++)
+					{ 
+						if (isCollide(glm::vec3(positions[i].x, (position.y - k * 0.1f) * height, positions[i].z), width, height, isCollde)) 
+						{
+							isCollideVolume = true;
+							k = 100;
+						} 
+					} 
+
+					if (!isCollideVolume && isCollideObject)
+					{ 
+						direction = DIRECTION::UP;
+						break;
+					}
+
+					isCollideVolume = false; 
+					isCollideObject = false;
+				}
+			}
 		}
 	}
 
-
-	if (isCollide(position, width, height,isCollde))
-	{
-		isChase = false;
-		direction = DIRECTION::IDLE;
-		std::cout << "finish";
-	}
+		if (isCollide(position, width, height, isCollde))
+		{
+			isChase = false;
+			direction = DIRECTION::IDLE;
+			std::cout << "finish";
+		}
+	
 
 }
 
