@@ -1,5 +1,13 @@
 #include"config.h"
 
+enum DIRECTION {
+	IDLE = 0,
+	LEFT = 1,
+	RIGHT = 2,
+	UP = 3,
+	DOWN = 4
+};
+
 class Enemy 
 {
 
@@ -16,6 +24,8 @@ public:
 	void SetVisibilty(bool visibilty);
 	bool isCollide(glm::vec3 position, float width, float height, bool collide);
 	void translate(float x, float y, float z);
+	void Chase(glm::vec3 position, float width, float height,bool isCollide);
+	void isCanMove(glm::vec3 position, float width, float height,bool isCollide);
 
 
 public:
@@ -36,6 +46,8 @@ public:
 
 	bool isChase;
 	glm::vec3 chasePos;
+
+	DIRECTION direction;
 
 
 private:

@@ -42,14 +42,11 @@ int main()
 
     Object object;
     object.CreateCube(glm::vec3(0.5f, 0.5f, 1.0f));
-    object.translate(-0.5f, 0.0f, 0.0f);
-    
-    Object player;
-    player.CreateCube(glm::vec3(0.3f,1.f,1.0f));
-    player.translate(0.4f, 0.0f, 0.0f);
-
+    object.translate(-1.3f, 0.0f, 0.0f);
     
     Enemy enemy;
+    enemy.CreateCube(glm::vec3(0.5f, 0.5f, 1.0f));
+    enemy.translate(-1.3f, -1.3f, 0.0);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -60,10 +57,11 @@ int main()
         shader.use();
         glBindVertexArray(object.VAO);
         object.DrawCube(shader.program);
-        glBindVertexArray(player.VAO);
-        player.DrawCube(shader.program);
+        glBindVertexArray(enemy.VAO);
+        enemy.DrawCube(shader.program);
 
-        std::cout << object.isCollide(player.position,player.width,player.height,player.isCollisionEnable)<<std::endl;
+        enemy.Chase(object.position, object.width, object.height,object.isCollisionEnable);
+       
 
         
         glfwSwapBuffers(window);

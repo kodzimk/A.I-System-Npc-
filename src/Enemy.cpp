@@ -12,7 +12,7 @@ Enemy::Enemy()
 	VBO = 0;
 	VAO = 0;
 	isCollisionEnable = true;
-
+	direction = DIRECTION::IDLE;
 	elements = 0;
 }
 
@@ -168,7 +168,7 @@ bool Enemy::isCollide(glm::vec3 position, float width, float height, bool Colisi
 {
 	if (Colision == true && isCollisionEnable == true)
 	{
-		glm::vec3 box1right = { this->position.x,this->position.y,actualPos.z };
+		glm::vec3 box1right = { this->actualPos.x,this->actualPos.y,this->actualPos.z };
 		glm::vec3 box1Left = { this->actualPos.x + this->width,this->actualPos.y + this->height,this->actualPos.z };
 
 		glm::vec3 box2right = { position.x,position.y,position.z };
@@ -192,5 +192,122 @@ void Enemy::translate(float x, float y, float z)
 	position.y = position.y + y;
 
 	model = glm::translate(model, glm::vec3(x, y, z));
+}
+
+void Enemy::Chase(glm::vec3 position,float width,float height,bool isCollide1)
+{
+	glm::vec3 actualpos2 = {position.x * width,position.y*height,0.0f };
+
+	isChase = true;
+
+
+	  isCanMove(actualpos2, width, height, isCollide1);
+}
+
+void Enemy::isCanMove(glm::vec3 position, float width, float height,bool isCollde)
+{
+	isChase = true;
+	actualPos.x = this->position.x * this->width;
+	actualPos.y = this->position.y * this->height;
+
+
+	if (isCollde && isChase)
+	{
+		if (direction == DIRECTION::IDLE)
+		{
+			if (this->actualPos.x < position.x)
+			{
+				direction = DIRECTION::RIGHT;
+			}
+			else
+				direction = DIRECTION::LEFT;
+		}
+
+
+
+		if (direction == DIRECTION::LEFT)
+		{		
+			if (!isCollide(position, width, height, isCollde))
+				   translate(-0.0001f, 0.0f, 0.0f);
+			else if (this->actualPos.y > position.y|| this->actualPos.x != position.x)
+			{
+				direction = DIRECTION::DOWN;
+			}
+			else
+			{
+				direction = DIRECTION::UP;
+			}
+
+			if (this->actualPos.y > position.y)
+				direction = DIRECTION::DOWN;
+			else if (this->actualPos.y <= position.y)
+				direction = DIRECTION::UP;
+			
+		}
+
+		if (direction == DIRECTION::UP)
+		{
+			if (!isCollide(position, width, height, isCollde))
+				translate(0.0f, 0.0001f, 0.0f);
+			else if (this->actualPos.x > position.x)
+			{
+				direction = DIRECTION::RIGHT;
+			}
+			else
+			{
+				direction = DIRECTION::LEFT;
+			}
+
+			if (this->actualPos.x >= position.x)
+				direction = DIRECTION::LEFT;
+			else if (this->actualPos.x < position.x)
+				direction = DIRECTION::RIGHT;
+
+
+		}
+
+		if (direction == DIRECTION::DOWN)
+		{
+			if (!isCollide(position, width, height, isCollde) )
+				translate(0.0f, -0.0001f, 0.0f);
+			else if (this->actualPos.x > position.x)
+			{
+				direction = DIRECTION::LEFT;
+			}
+			else
+				direction = DIRECTION::RIGHT;
+
+			if (this->actualPos.x > position.x)
+				direction = DIRECTION::LEFT;
+			else if (this->actualPos.x < position.x)
+				direction = DIRECTION::RIGHT;
+
+		}
+
+		if (direction == DIRECTION::RIGHT)
+		{
+			if (!isCollide(position, width, height, isCollde))
+				translate(0.0001f, 0.f, 0.0f);
+			else if (this->actualPos.y > position.y)
+			{
+				direction = DIRECTION::DOWN;
+			}
+			else
+				direction = DIRECTION::UP;
+
+			if (this->actualPos.y > position.y)
+				direction = DIRECTION::DOWN;
+			else if (this->actualPos.y < position.y)
+				direction = DIRECTION::UP;
+		}
+	}
+
+
+	if (isCollide(position, width, height, isCollde))
+	{
+		isChase = false;
+		direction = DIRECTION::IDLE;
+	}
+
 }
 

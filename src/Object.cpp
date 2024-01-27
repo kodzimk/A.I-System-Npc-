@@ -166,7 +166,7 @@ bool Object::isCollide(glm::vec3 position,float width,float height,bool Colision
 {
 	if (Colision == true && isCollisionEnable == true)
 	{
-		glm::vec3 box1right = { this->position.x,this->position.y,actualPos.z };
+		glm::vec3 box1right = { this->actualPos .x,this->actualPos.y,actualPos.z };
 		glm::vec3 box1Left = { this->actualPos.x + this->width,this->actualPos.y + this->height,this->actualPos.z };
 
 		glm::vec3 box2right = { position.x,position.y,position.z };
