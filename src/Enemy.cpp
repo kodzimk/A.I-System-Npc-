@@ -185,6 +185,7 @@ bool Enemy::isCollide(glm::vec3 position, float width, float height, bool Colisi
 	return false;
 }
 
+
 void Enemy::translate(float x, float y, float z)
 {
 
@@ -194,24 +195,41 @@ void Enemy::translate(float x, float y, float z)
 	model = glm::translate(model, glm::vec3(x, y, z));
 }
 
+bool Enemy::isCollidePosition(glm::vec3 position, float width, float height)
+{
+	glm::vec3 box1right = { this->actualPos.x,this->actualPos.y,this->actualPos.z };
+   	glm::vec3 box1Left = { this->actualPos.x + this->width,this->actualPos.y + this->height,this->actualPos.z };
+   
+   	glm::vec3 box2right = { position.x,position.y,position.z };
+   	glm::vec3 box2Left = { width + position.x ,height + position.y ,position.z };
+   
+   	if (box2right.x <= box1Left.x &&
+   		box2Left.x >= box1right.x &&
+   		box2right.y <= box1Left.y &&
+   		box2Left.y >= box1right.y)
+   	{
+   		return true;
+   	}
+
+   return false;
+}
+
 void Enemy::Chase(glm::vec3 position,float width,float height,bool isCollide1)
 {
 	glm::vec3 actualpos2 = {position.x * width,position.y*height,0.0f };
-
 	isChase = true;
-
-
-	  isCanMove(actualpos2, width, height, isCollide1);
+	
+	if(!isCollide(actualpos2,width,height,isCollide1))
+	   isCanMove(actualpos2, width, height, isCollide1);
 }
 
 void Enemy::isCanMove(glm::vec3 position, float width, float height,bool isCollde)
 {
-	isChase = true;
 	actualPos.x = this->position.x * this->width;
 	actualPos.y = this->position.y * this->height;
 
 
-	if (isCollde && isChase)
+	if (isChase)
 	{
 		if (direction == DIRECTION::IDLE)
 		{
@@ -303,10 +321,11 @@ void Enemy::isCanMove(glm::vec3 position, float width, float height,bool isColld
 	}
 
 
-	if (isCollide(position, width, height, isCollde))
+	if (isCollide(position, width, height,isCollde))
 	{
 		isChase = false;
 		direction = DIRECTION::IDLE;
+		std::cout << "finish";
 	}
 
 }

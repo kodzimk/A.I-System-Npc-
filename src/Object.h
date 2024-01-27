@@ -17,6 +17,7 @@ public:
 	void CreateCircle(float radius, int vCount, glm::vec3 scale);
 	void SetVisibilty(bool visibilty);
 	bool isCollide(glm::vec3 position, float width, float height,bool collide);
+
 	void translate(float x, float y, float z);
 
 

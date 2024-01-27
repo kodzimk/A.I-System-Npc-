@@ -24,6 +24,7 @@ public:
 	void SetVisibilty(bool visibilty);
 	bool isCollide(glm::vec3 position, float width, float height, bool collide);
 	void translate(float x, float y, float z);
+	bool isCollidePosition(glm::vec3 position, float width, float height);
 	void Chase(glm::vec3 position, float width, float height,bool isCollide);
 	void isCanMove(glm::vec3 position, float width, float height,bool isCollide);
 

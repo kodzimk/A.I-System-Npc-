@@ -43,6 +43,7 @@ int main()
     Object object;
     object.CreateCube(glm::vec3(0.5f, 0.5f, 1.0f));
     object.translate(-1.3f, 0.0f, 0.0f);
+    object.SetVisibilty(true);
     
     Enemy enemy;
     enemy.CreateCube(glm::vec3(0.5f, 0.5f, 1.0f));
