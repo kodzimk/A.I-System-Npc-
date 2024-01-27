@@ -25,8 +25,14 @@ public:
 	bool isCollide(glm::vec3 position, float width, float height, bool collide);
 	void translate(float x, float y, float z);
 	bool isCollidePosition(glm::vec3 position, float width, float height);
-	void Chase(std::vector<glm::vec3> positions,glm::vec3 position, float width, float height,bool isCollide);
-	void isCanMove(std::vector<glm::vec3> positions,glm::vec3 position, float width, float height,bool isCollide);
+	void Chase(std::vector<glm::vec3> positions, std::vector<float> widths, 
+		std::vector<float> heights,
+		std::vector<bool> collisions,
+		glm::vec3 position, float width, float height,bool isCollide);
+	void isCanMove(std::vector<glm::vec3> positions, std::vector<float> widths,
+		std::vector<float> heights,
+		std::vector<bool> collisions,
+		glm::vec3 position, float width, float height,bool isCollide);
 
 
 public:

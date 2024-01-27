@@ -47,7 +47,9 @@ int main()
 
     Object object1;
     object1.CreateCube(glm::vec3(0.5f, 0.5f, 1.0f));
-    object1.translate(0.4f, 0.4f, 0.0f);
+    object1.translate(-0.4f, -0.4f, 0.0f);
+    object1.SetVisibilty(false);
+    
     
     Enemy enemy;
     enemy.CreateCube(glm::vec3(0.5f, 0.5f, 1.0f));
@@ -55,6 +57,15 @@ int main()
 
     std::vector<glm::vec3>positions;
     positions.push_back(object1.actualPos);
+
+    std::vector<float>widths;
+    widths.push_back(object1.width);
+
+    std::vector<float>heights;
+    heights.push_back(object1.height);
+
+    std::vector<bool>collsions;
+    collsions.push_back(object1.isCollisionEnable);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -71,7 +82,9 @@ int main()
         object1.DrawCube(shader.program);
 
 
-        enemy.Chase(positions, object.actualPos, object.width, object.height, object.isCollisionEnable);
+        enemy.Chase(positions,widths,heights,collsions, 
+                   object.actualPos, object.width, object.height,
+                   object.isCollisionEnable);
        
 
         
