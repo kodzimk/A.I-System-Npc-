@@ -77,6 +77,8 @@ int main()
     heights.push_back(object2.height);
     collsions.push_back(object2.isCollisionEnable);
 
+    enemy.SetTimer(5.0f);
+
     while (!glfwWindowShouldClose(window))
     {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -94,7 +96,7 @@ int main()
         glBindVertexArray(object2.VAO);
         object2.DrawCube(shader.program);
     
-
+        enemy.Wait();
         enemy.Chase(positions,widths,heights,collsions, 
                    object.actualPos, object.width, object.height,
                    object.isCollisionEnable);

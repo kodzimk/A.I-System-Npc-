@@ -25,6 +25,8 @@ public:
 	bool isCollide(glm::vec3 position, float width, float height, bool collide);
 	void translate(float x, float y, float z);
 	bool isCollidePosition(glm::vec3 position, float width, float height);
+	void SetTimer(double timer);
+	void Wait();
 	void Chase(std::vector<glm::vec3> positions, std::vector<float> widths, 
 		std::vector<float> heights,
 		std::vector<bool> collisions,
@@ -55,7 +57,9 @@ public:
 	glm::vec3 chasePos;
 
 	DIRECTION direction;
-
+	double timer;
+	double EndTimer;
+	bool startTimer;
 
 private:
 	float vertices[9] = {
